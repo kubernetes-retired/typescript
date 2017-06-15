@@ -1,0 +1,11 @@
+{
+    "ambientDependencies": {
+        "core-js": "registry:dt/core-js#0.0.0+20160317120654",
+        "node": "registry:dt/node#4.0.0+20160423143914"
+    },
+    "dependencies": {
+        "bluebird": "registry:npm/bluebird#3.5.0+20170314181206",
+        "js-yaml": "registry:dt/js-yaml#3.5.2+20161220142525",
+        "request": "registry:npm/request#2.69.0+20160428223725"
+    }
+}
