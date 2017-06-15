@@ -25,6 +25,5 @@
         "@types/js-yaml": "^3.5.31",
         "@types/node": "^8.0.2",
         "typescript": "^2.3.4",
-        "typings": "^0.8.1"
     }
 }
