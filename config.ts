@@ -1,7 +1,12 @@
-import yaml = require('js-yaml');
 import fs = require('fs');
-import request = require('request');
+import os = require('os');
+import path = require('path');
+
 import base64 = require('base-64');
+import request = require('request');
+import yaml = require('js-yaml');
+
+import client = require('./auth-wrapper');
 
 export class KubeConfig {
     /**
@@ -94,15 +99,28 @@ export class KubeConfig {
     }
 
     public applyToRequest(opts: request.Options) {
-        // TODO: Handle inline CA here
         let cluster = this.getCurrentCluster();
         let user = this.getCurrentUser();
 
         opts.ca = this.bufferFromFileOrString(cluster['certificate-authority'], cluster['certificate-authority-data']);
         opts.cert = this.bufferFromFileOrString(user['client-certificate'], user['client-certificate-data']);
         opts.key = this.bufferFromFileOrString(user['client-key'], user['client-key-data']);
-        if (user['auth-provider']) {
-            opts.headers['Authorization'] = 'Bearer ' + user['auth-provider']['config']['access-token'];
+        let token = null;
+        if (user['auth-provider'] && user['auth-provider']['config']) {
+            token = 'Bearer ' + user['auth-provider']['config']['access-token'];
+            // TODO: check expiration and re-auth here.
+        }
+        if (user['token']) {
+            token = 'Bearer ' + user['token'];
+        }
+        if (token) {
+            opts.headers['Authorization'] = token;
+        }
+        if (user['username']) {
+            opts.auth = {
+                username: user['username'],
+                password: user['password']
+            }
         }
     } 
 
@@ -115,5 +133,26 @@ export class KubeConfig {
         this.contexts = obj.contexts;
         this.users = obj.users;
         this.currentContext = obj['current-context'];
+    }
+}
+
+export class Config {
+    public static fromFile(filename: string) {
+        let kc = new KubeConfig();
+        kc.loadFromFile(filename);
+
+        let k8sApi = new client.Core_v1Api(kc.getCurrentCluster()['server']);
+        k8sApi.setDefaultAuthentication(kc);
+
+        return k8sApi;
+    }
+
+    public static defaultClient() {
+        let config = path.join(process.env.HOME, ".kube", "config");
+        if (fs.existsSync(config)) {
+            return Config.fromFile(config);
+        }
+
+        return new client.Core_v1Api('http://localhost:8080');
     }
 }
