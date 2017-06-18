@@ -7,15 +7,23 @@ Needs lots of work...
 Install nodejs
 
 ```sh
-sudo npm install -g typescript
-sudo npm install -g ts-node
-sudo npm install -g request bluebird
+# Typescript modules
+sudo npm install -g typescript ts-node
+
+# Required libraries for the client
+sudo npm install -g request bluebird js-yaml base-64
 ```
 
 # Running
+## With `ts-node`
 ```sh
-kubectl proxy &
-cd examples
-ts-node client.ts
+ts-node example.ts
 ```
+
+## With `tsc`
+```sh
+tsc example.ts
+node example.js
+```
+
 
