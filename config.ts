@@ -137,6 +137,13 @@ export class KubeConfig {
 }
 
 export class Config {
+    public static SERVICEACCOUNT_ROOT =
+        '/var/run/secrets/kubernetes.io/serviceaccount';
+    public static SERVICEACCOUNT_CA_PATH =
+        Config.SERVICEACCOUNT_ROOT + '/ca.crt';
+    public static SERVICEACCOUNT_TOKEN_PATH =
+        Config.SERVICEACCOUNT_ROOT + '/token';
+
     public static fromFile(filename: string) {
         let kc = new KubeConfig();
         kc.loadFromFile(filename);
@@ -147,10 +154,37 @@ export class Config {
         return k8sApi;
     }
 
+    public static fromCluster() {
+        let host = process.env.KUBERNETES_SERVICE_HOST
+        let port = process.env.KUBERNETES_SERVICE_PORT
+
+        // TODO: better error checking here.
+        let caCert = fs.readFileSync(Config.SERVICEACCOUNT_CA_PATH);
+        let token = fs.readFileSync(Config.SERVICEACCOUNT_TOKEN_PATH);
+
+        let k8sApi = new client.Core_v1Api('https://' + host + ':' + port);
+        k8sApi.setDefaultAuthentication({
+            'applyToRequest': (opts) => {
+                    opts.ca = caCert;
+                    opts.headers['Authorization'] = 'Bearer ' + token;            
+            }
+        });
+
+        return k8sApi;
+    }
+
     public static defaultClient() {
+        if (process.env.KUBECONFIG) {
+            return Config.fromFile(process.env.KUBECONFIG);
+        }
+
         let config = path.join(process.env.HOME, ".kube", "config");
         if (fs.existsSync(config)) {
             return Config.fromFile(config);
+        }
+
+        if (fs.existsSync(Config.SERVICEACCOUNT_TOKEN_PATH)) {
+            return Config.fromCluster();
         }
 
         return new client.Core_v1Api('http://localhost:8080');
