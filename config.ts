@@ -3,7 +3,9 @@ import os = require('os');
 import path = require('path');
 
 import base64 = require('base-64');
+import jsonpath = require('jsonpath');
 import request = require('request');
+import shelljs = require('shelljs');
 import yaml = require('js-yaml');
 
 import client = require('./auth-wrapper');
@@ -107,8 +109,36 @@ export class KubeConfig {
         opts.key = this.bufferFromFileOrString(user['client-key'], user['client-key-data']);
         let token = null;
         if (user['auth-provider'] && user['auth-provider']['config']) {
-            token = 'Bearer ' + user['auth-provider']['config']['access-token'];
-            // TODO: check expiration and re-auth here.
+            let config = user['auth-provider']['config'];
+            // This should probably be extracted as auth-provider specific plugins...
+            token = 'Bearer ' + config['access-token'];
+            let expiry = config['expiry'];
+            if (expiry) {
+                let expiration = Date.parse(expiry);
+                if (expiration < Date.now()) {
+                    if (config['cmd-path']) {
+                        let cmd = config['cmd-path'];
+                        if (config['cmd-args']) {
+                            cmd = cmd + ' ' + config['cmd-args'];
+                        }
+                        // TODO: Cache to file?
+                        let result = shelljs.exec(cmd, {silent:true});
+                        if (result['code'] != 0) {
+                            throw new Error('Failed to refresh token: ' + result);
+                        }
+                        let resultObj = JSON.parse(result.stdout.toString());
+
+                        let path = config['token-key'];
+                        // Format in file is {<query>}, so slice it out and add '$'
+                        path = '$' + path.slice(1, -1);
+
+                        config['access-token'] = jsonpath.query(resultObj, path);
+                        token = 'Bearer ' + config['access-token'];
+                    } else {
+                        throw new Error('Token is expired!');
+                    }
+                }
+            }
         }
         if (user['token']) {
             token = 'Bearer ' + user['token'];
