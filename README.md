@@ -1,4 +1,4 @@
-# typescript
+# typescript client for Kubernetes
 [Alpha] Typescript client for kubernetes
 
 Needs lots of work...
@@ -43,5 +43,4 @@ ts-node example.ts
 tsc example.ts
 node example.js
 ```
-
 
