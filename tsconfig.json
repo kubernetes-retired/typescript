@@ -13,7 +13,10 @@
     },
     "exclude": [
         "node_modules",
-        "typings/browser",
-        "typings/browser.d.ts"
+        "dist"
+    ],
+    "include": [
+        "*.ts",
+        "src/**/*"
     ]
 }
