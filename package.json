@@ -8,7 +8,7 @@
         "postinstall": "typings install",
         "clean": "rm -Rf node_modules/ typings/ *.js",
         "build": "tsc",
-        "test": "npm run build && node client.js"
+        "test": "npm run build && node dist/client.js"
     },
     "author": "Swagger Codegen Contributors",
     "license": "Unlicense",

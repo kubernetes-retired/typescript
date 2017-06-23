@@ -8,7 +8,8 @@
         "removeComments": true,
         "sourceMap": true,
         "noLib": false,
-        "declaration": true
+        "declaration": true,
+        "outDir": "dist"
     },
     "exclude": [
         "node_modules",
@@ -16,4 +17,3 @@
         "typings/browser.d.ts"
     ]
 }
-
