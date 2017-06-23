@@ -7,6 +7,7 @@ import jsonpath = require('jsonpath');
 import request = require('request');
 import shelljs = require('shelljs');
 import yaml = require('js-yaml');
+import api = require('./api');
 
 import client = require('./auth-wrapper');
 
@@ -31,7 +32,7 @@ export class KubeConfig {
      */
     'currentContext': string;
 
-    constructor() {}
+    constructor() { }
 
     public getContexts() {
         return this.contexts;
@@ -122,7 +123,7 @@ export class KubeConfig {
                             cmd = cmd + ' ' + config['cmd-args'];
                         }
                         // TODO: Cache to file?
-                        let result = shelljs.exec(cmd, {silent:true});
+                        let result = shelljs.exec(cmd, { silent: true });
                         if (result['code'] != 0) {
                             throw new Error('Failed to refresh token: ' + result);
                         }
@@ -152,7 +153,7 @@ export class KubeConfig {
                 password: user['password']
             }
         }
-    } 
+    }
 
     public loadFromString(config: string) {
         var obj = yaml.safeLoad(config);
@@ -168,13 +169,13 @@ export class KubeConfig {
 
 export class Config {
     public static SERVICEACCOUNT_ROOT =
-        '/var/run/secrets/kubernetes.io/serviceaccount';
+    '/var/run/secrets/kubernetes.io/serviceaccount';
     public static SERVICEACCOUNT_CA_PATH =
-        Config.SERVICEACCOUNT_ROOT + '/ca.crt';
+    Config.SERVICEACCOUNT_ROOT + '/ca.crt';
     public static SERVICEACCOUNT_TOKEN_PATH =
-        Config.SERVICEACCOUNT_ROOT + '/token';
+    Config.SERVICEACCOUNT_ROOT + '/token';
 
-    public static fromFile(filename: string) {
+    public static fromFile(filename: string): api.Core_v1Api {
         let kc = new KubeConfig();
         kc.loadFromFile(filename);
 
@@ -184,7 +185,7 @@ export class Config {
         return k8sApi;
     }
 
-    public static fromCluster() {
+    public static fromCluster(): api.Core_v1Api {
         let host = process.env.KUBERNETES_SERVICE_HOST
         let port = process.env.KUBERNETES_SERVICE_PORT
 
@@ -195,15 +196,15 @@ export class Config {
         let k8sApi = new client.Core_v1Api('https://' + host + ':' + port);
         k8sApi.setDefaultAuthentication({
             'applyToRequest': (opts) => {
-                    opts.ca = caCert;
-                    opts.headers['Authorization'] = 'Bearer ' + token;            
+                opts.ca = caCert;
+                opts.headers['Authorization'] = 'Bearer ' + token;
             }
         });
 
         return k8sApi;
     }
 
-    public static defaultClient() {
+    public static defaultClient(): api.Core_v1Api {
         if (process.env.KUBECONFIG) {
             return Config.fromFile(process.env.KUBECONFIG);
         }
