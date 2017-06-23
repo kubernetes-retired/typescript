@@ -15,7 +15,7 @@
     "dependencies": {
         "bluebird": "^3.3.5",
         "request": "^2.72.0",
-	    "js-yaml": "^3.5.2",
+        "js-yaml": "^3.5.2",
         "jsonpath": "^0.2.11",
         "shelljs": "^0.7.8 "
     },
