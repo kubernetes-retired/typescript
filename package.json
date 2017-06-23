@@ -7,7 +7,7 @@
     "scripts": {
         "clean": "rm -Rf node_modules/ dist/",
         "build": "tsc",
-        "test": "npm run build && node dist/client.js"
+        "test": "npm run build && node dist/example.js"
     },
     "author": "Swagger Codegen Contributors",
     "license": "Unlicense",
