@@ -8,6 +8,7 @@ import request = require('request');
 import shelljs = require('shelljs');
 import yaml = require('js-yaml');
 import api = require('./api');
+import { Cluster, newClusters, User, newUsers, Context, newContexts } from './config_types';
 
 import client = require('./auth-wrapper');
 
@@ -15,17 +16,17 @@ export class KubeConfig {
     /**
      * The list of all known clusters
      */
-    'clusters': Object[];
+    'clusters': Cluster[];
 
     /**
      * The list of all known users
      */
-    'users': Object[];
+    'users': User[];
 
     /**
      * The list of all known contexts
      */
-    'contexts': Object[];
+    'contexts': Context[];
 
     /**
      * The name of the current context
@@ -160,9 +161,9 @@ export class KubeConfig {
         if (obj.apiVersion != 'v1') {
             throw new TypeError('unknown version: ' + obj.apiVersion);
         }
-        this.clusters = obj.clusters;
-        this.contexts = obj.contexts;
-        this.users = obj.users;
+        this.clusters = newClusters(obj.clusters);
+        this.contexts = newContexts(obj.contexts);
+        this.users = newUsers(obj.users);
         this.currentContext = obj['current-context'];
     }
 }
