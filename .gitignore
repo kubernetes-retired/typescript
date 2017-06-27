@@ -1,0 +1,6 @@
+*.js
+node_modules
+typings
+.swagger-codegen-ignore
+.vscode/*
+dist

@@ -1,0 +1,29 @@
+{
+    "name": "kubernetes-client-typescript",
+    "version": "0.1.0",
+    "description": "NodeJS client for kubernetes-client-typescript",
+    "repository": "kubernetes-client/typescript",
+    "main": "api.js",
+    "scripts": {
+        "clean": "rm -Rf node_modules/ dist/",
+        "build": "tsc",
+        "test": "npm run build && node dist/example.js"
+    },
+    "author": "Swagger Codegen Contributors",
+    "license": "Unlicense",
+    "dependencies": {
+        "base-64": "^0.1.0",
+        "bluebird": "^3.3.5",
+        "js-yaml": "^3.5.2",
+        "jsonpath": "^0.2.11",
+        "request": "^2.72.0",
+        "shelljs": "^0.7.8 "
+    },
+    "devDependencies": {
+        "@types/base-64": "^0.1.2",
+        "@types/bluebird": "^3.5.7",
+        "@types/js-yaml": "^3.5.31",
+        "@types/node": "^8.0.2",
+        "typescript": "^2.3.4",
+    }
+}
