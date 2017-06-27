@@ -34,6 +34,17 @@ describe("KubeConfig", () => {
             expect(user2.name).to.equal("user2");
             expect(user2.certData).to.equal("CADATA");
             expect(user2.keyData).to.equal("CKDATA");
+
+            // check contexts
+            expect(kc.contexts.length).to.equal(2);
+            let context1 = kc.contexts[0];
+            let context2 = kc.contexts[1];
+            expect(context1.name).to.equal("context1");
+            expect(context1.user).to.equal("user1");
+            expect(context1.cluster).to.equal("cluster1");
+            expect(context2.name).to.equal("context2");
+            expect(context2.user).to.equal("user2");
+            expect(context2.cluster).to.equal("cluster2")
         });
         it("should fail to load a missing kubeconfig file", () => {
             // TODO: make the error check work

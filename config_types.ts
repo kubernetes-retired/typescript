@@ -7,10 +7,11 @@ export interface Cluster {
 }
 
 export function newClusters(a: any): Cluster[] {
-    let ret = new Array<Cluster>();
-    const len = a.length
-    for (let i = 0; i < len; i++) {
-        let elt = a[i];
+    return u.map(a, clusterIterator())
+}
+
+function clusterIterator(): u.ListIterator<any, Cluster> {
+    return function (elt: any, i: number, list: u.List<any>): Cluster {
         if (!elt['name']) {
             throw new Error(`clusters${i}.name is missing`);
         }
@@ -20,13 +21,12 @@ export function newClusters(a: any): Cluster[] {
         if (!elt.cluster['server']) {
             throw new Error(`clusters[${i}].cluster.server is missing`);
         }
-        ret.push({
+        return {
             name: elt['name'],
             caData: elt.cluster['certificate-authority-data'],
             server: elt.cluster['server']
-        });
+        };
     }
-    return ret
 }
 
 export interface User {
@@ -42,13 +42,13 @@ export function newUsers(a: any): User[] {
 function userIterator(): u.ListIterator<any, User> {
     return function (elt: any, i: number, list: u.List<any>): User {
         if (!elt.name) {
-            throw new Error(`contexts[${i}].name is missing`);
+            throw new Error(`users[${i}].name is missing`);
         }
         if (!elt.user["client-certificate-data"]) {
-            throw new Error(`contexts[${i}].user.client-certificate-data is missing`);
+            throw new Error(`users[${i}].user.client-certificate-data is missing`);
         }
         if (!elt.user["client-key-data"]) {
-            throw new Error(`contexts[${i}].user.client-key-data is missing`);
+            throw new Error(`users[${i}].user.client-key-data is missing`);
         }
         return {
             name: elt.name,
@@ -65,5 +65,24 @@ export interface Context {
 }
 
 export function newContexts(a: any): Context[] {
-    return Array<Context>();
+    return u.map(a, contextIterator());
+}
+
+function contextIterator(): u.ListIterator<any, Context> {
+    return function (elt: any, i: number, list: u.List<any>): Context {
+        if (!elt.name) {
+            throw new Error(`contexts[${i}].name is missing`);
+        }
+        if (!elt.context["cluster"]) {
+            throw new Error(`contexts[${i}].context.cluster is missing`);
+        }
+        if (!elt.context["user"]) {
+            throw new Error(`context[${i}].context.user is missing`);
+        }
+        return {
+            cluster: elt.context['cluster'],
+            user: elt.context["user"],
+            name: elt.name
+        };
+    }
 }
