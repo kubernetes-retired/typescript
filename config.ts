@@ -32,7 +32,7 @@ export class KubeConfig {
      */
     'currentContext': string;
 
-    constructor() {}
+    constructor() { }
 
     public getContexts() {
         return this.contexts;
