@@ -17,7 +17,8 @@
         "js-yaml": "^3.5.2",
         "jsonpath": "^0.2.11",
         "request": "^2.72.0",
-        "shelljs": "^0.7.8 "
+        "shelljs": "^0.7.8 ",
+        "underscore": "^1.8.3"
     },
     "devDependencies": {
         "@types/base-64": "^0.1.2",
@@ -26,6 +27,7 @@
         "@types/js-yaml": "^3.5.31",
         "@types/mocha": "^2.2.41",
         "@types/node": "^8.0.2",
+        "@types/underscore": "^1.8.1",
         "chai": "^4.0.2",
         "mocha": "^3.4.2",
         "ts-node": "^3.1.0",
