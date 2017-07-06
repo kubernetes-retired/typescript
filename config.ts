@@ -55,10 +55,14 @@ export class KubeConfig {
         this.currentContext = context;
     }
 
-    private findObject(list: Object[], name: string, key: string) {
+    // Only really public for testing...
+    public static findObject(list: Object[], name: string, key: string) {
         for (let obj of list) {
             if (obj['name'] == name) {
-                return obj[key];
+                if (obj[key]) {
+                    return obj[key];
+                }
+                return obj;
             }
         }
         return null;
@@ -69,7 +73,7 @@ export class KubeConfig {
     }
 
     public getContextObject(name: string) {
-        return this.findObject(this.contexts, name, 'context');
+        return KubeConfig.findObject(this.contexts, name, 'context');
     }
 
     public getCurrentCluster() {
@@ -77,7 +81,7 @@ export class KubeConfig {
     }
 
     public getCluster(name: string) {
-        return this.findObject(this.clusters, name, 'cluster');
+        return KubeConfig.findObject(this.clusters, name, 'cluster');
     }
 
     public getCurrentUser() {
@@ -85,7 +89,7 @@ export class KubeConfig {
     }
 
     public getUser(name: string) {
-        return this.findObject(this.users, name, 'user');
+        return KubeConfig.findObject(this.users, name, 'user');
     }
 
     public loadFromFile(file: string) {
@@ -106,9 +110,9 @@ export class KubeConfig {
         let cluster = this.getCurrentCluster();
         let user = this.getCurrentUser();
 
-        opts.ca = this.bufferFromFileOrString(cluster['certificate-authority'], cluster['certificate-authority-data']);
-        opts.cert = this.bufferFromFileOrString(user['client-certificate'], user['client-certificate-data']);
-        opts.key = this.bufferFromFileOrString(user['client-key'], user['client-key-data']);
+        opts.ca = this.bufferFromFileOrString(cluster.caFile, cluster.caData);
+        opts.cert = this.bufferFromFileOrString(user.certFile, user.certData);
+        opts.key = this.bufferFromFileOrString(user.keyFile, user.keyData);
         let token = null;
         if (user['auth-provider'] && user['auth-provider']['config']) {
             let config = user['auth-provider']['config'];
