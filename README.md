@@ -1,4 +1,7 @@
 # typescript client for Kubernetes
+
+[![Build Status](https://travis-ci.org/kubernetes-client/typescript.svg?branch=master)](https://travis-ci.org/kubernetes-client/typescript)
+
 [Alpha] Typescript client for kubernetes
 
 Needs lots of work...
