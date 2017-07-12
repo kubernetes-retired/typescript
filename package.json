@@ -1,36 +1,38 @@
 {
-    "name": "kubernetes-client-typescript",
-    "version": "0.1.0",
-    "description": "NodeJS client for kubernetes-client-typescript",
-    "repository": "kubernetes-client/typescript",
-    "main": "api.js",
-    "scripts": {
-        "clean": "rm -Rf node_modules/ dist/",
-        "build": "tsc",
-        "test": "mocha -r ts-node/register *_test.ts"
-    },
-    "author": "Swagger Codegen Contributors",
-    "license": "Unlicense",
-    "dependencies": {
-        "base-64": "^0.1.0",
-        "bluebird": "^3.3.5",
-        "js-yaml": "^3.5.2",
-        "jsonpath": "^0.2.11",
-        "request": "^2.72.0",
-        "shelljs": "^0.7.8 ",
-        "underscore": "^1.8.3"
-    },
-    "devDependencies": {
-        "@types/base-64": "^0.1.2",
-        "@types/bluebird": "^3.5.7",
-        "@types/chai": "^4.0.1",
-        "@types/js-yaml": "^3.5.31",
-        "@types/mocha": "^2.2.41",
-        "@types/node": "^8.0.2",
-        "@types/underscore": "^1.8.1",
-        "chai": "^4.0.2",
-        "mocha": "^3.4.2",
-        "ts-node": "^3.1.0",
-        "typescript": "^2.3.4"
-    }
+  "name": "kubernetes-client-typescript",
+  "version": "0.1.0",
+  "description": "NodeJS client for kubernetes-client-typescript",
+  "repository": "kubernetes-client/typescript",
+  "main": "api.js",
+  "scripts": {
+    "clean": "rm -Rf node_modules/ dist/",
+    "build": "tsc",
+    "test": "mocha -r ts-node/register *_test.ts"
+  },
+  "author": "Swagger Codegen Contributors",
+  "license": "Unlicense",
+  "dependencies": {
+    "base-64": "^0.1.0",
+    "bluebird": "^3.3.5",
+    "chai": "^4.1.0",
+    "js-yaml": "^3.5.2",
+    "jsonpath": "^0.2.11",
+    "mocha": "^3.4.2",
+    "request": "^2.72.0",
+    "shelljs": "^0.7.8 ",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "@types/base-64": "^0.1.2",
+    "@types/bluebird": "^3.5.7",
+    "@types/chai": "^4.0.1",
+    "@types/js-yaml": "^3.5.31",
+    "@types/mocha": "^2.2.41",
+    "@types/node": "^8.0.2",
+    "@types/underscore": "^1.8.1",
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2",
+    "ts-node": "^3.1.0",
+    "typescript": "^2.3.4"
+  }
 }

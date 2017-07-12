@@ -3,6 +3,7 @@ import * as u from 'underscore';
 export interface Cluster {
     readonly name: string;
     readonly caData: string;
+    readonly caFile: string;
     readonly server: string;
 }
 
@@ -15,8 +16,8 @@ function clusterIterator(): u.ListIterator<any, Cluster> {
         if (!elt['name']) {
             throw new Error(`clusters${i}.name is missing`);
         }
-        if (!elt.cluster['certificate-authority-data']) {
-            throw new Error(`clusters[${i}].cluster.certificate-authority-data is missing`);
+        if (!elt.cluster['certificate-authority-data'] && !elt.cluster['certificate-authority']) {
+            throw new Error(`clusters[${i}].cluster.[certificate-authority-data, certificate-authority] is missing`);
         }
         if (!elt.cluster['server']) {
             throw new Error(`clusters[${i}].cluster.server is missing`);
@@ -24,6 +25,7 @@ function clusterIterator(): u.ListIterator<any, Cluster> {
         return {
             name: elt['name'],
             caData: elt.cluster['certificate-authority-data'],
+            caFile: elt.cluster['certificate-authority'],
             server: elt.cluster['server']
         };
     }
@@ -32,7 +34,9 @@ function clusterIterator(): u.ListIterator<any, Cluster> {
 export interface User {
     readonly name: string
     readonly certData: string
+    readonly certFile: string
     readonly keyData: string
+    readonly keyFile: string
 }
 
 export function newUsers(a: any): User[] {
@@ -44,16 +48,18 @@ function userIterator(): u.ListIterator<any, User> {
         if (!elt.name) {
             throw new Error(`users[${i}].name is missing`);
         }
-        if (!elt.user["client-certificate-data"]) {
+        if (!elt.user["client-certificate-data"] && !elt.user["client-certificate"]) {
             throw new Error(`users[${i}].user.client-certificate-data is missing`);
         }
-        if (!elt.user["client-key-data"]) {
+        if (!elt.user["client-key-data"] && !elt.user["client-key"]) {
             throw new Error(`users[${i}].user.client-key-data is missing`);
         }
         return {
             name: elt.name,
             certData: elt.user["client-certificate-data"],
-            keyData: elt.user["client-key-data"]
+            certFile: elt.user["client-certificate"],
+            keyData: elt.user["client-key-data"],
+            keyFile: elt.user["client-key"]
         }
     }
 }

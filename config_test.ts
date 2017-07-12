@@ -8,6 +8,38 @@ describe("Config", () => {
 
 
 describe("KubeConfig", () => {
+    describe("findObject", () => {
+        it("should find objects", () => {
+            let list = [
+                {
+                    name: "foo",
+                    "cluster": {
+                        some: "sub-object"
+                    },
+                    some: "object"
+                },
+                {
+                    name: "bar",
+                    some: "object",
+                    cluster: {
+                        sone: "sub-object"
+                    }
+                }
+            ];
+
+            // Validate that if the named object ('cluster' in this case) is inside we pick it out
+            let obj1 = KubeConfig.findObject(list, "foo", "cluster");
+            expect(obj1.some).to.equal("sub-object");
+
+            // Validate that if the named object is missing, we just return the full object
+            let obj2 = KubeConfig.findObject(list, "bar", "context");
+            expect(obj2.some).to.equal("object");
+
+            // validate that we do the right thing if it is missing
+            let obj3 = KubeConfig.findObject(list, "nonexistent", "context");
+            expect(obj3).to.equal(null);
+        });
+    });
     describe("loadFromFile", () => {
         it("should load the kubeconfig file properly", () => {
             let kc = new KubeConfig();
