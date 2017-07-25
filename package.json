@@ -1,16 +1,23 @@
 {
-  "name": "kubernetes-client-typescript",
-  "version": "0.1.0",
+  "name": "@kubernetes/typescript-node",
+  "version": "0.1.1",
   "description": "NodeJS client for kubernetes-client-typescript",
-  "repository": "kubernetes-client/typescript",
-  "main": "api.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kubernetes-client/typescript.git"
+  },
+  "files": [
+     "*.ts",
+     "*.js"
+  ],
+  "main": "index.js",
   "scripts": {
     "clean": "rm -Rf node_modules/ dist/",
     "build": "tsc",
     "test": "mocha -r ts-node/register *_test.ts"
   },
-  "author": "Swagger Codegen Contributors",
-  "license": "Unlicense",
+  "author": "Kubernetes Authors",
+  "license": "Apache-2.0",
   "dependencies": {
     "base-64": "^0.1.0",
     "bluebird": "^3.3.5",
@@ -34,5 +41,13 @@
     "mocha": "^3.4.2",
     "ts-node": "^3.1.0",
     "typescript": "^2.3.4"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/kubernetes-client/typescript/issues"
+  },
+  "homepage": "https://github.com/kubernetes-client/typescript#readme",
+  "keywords": [
+    "kubernetes",
+    "client"
+  ]
 }
