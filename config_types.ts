@@ -1,10 +1,12 @@
 import * as u from 'underscore';
+import * as fs from 'fs';
 
 export interface Cluster {
     readonly name: string;
     readonly caData: string;
     readonly caFile: string;
     readonly server: string;
+    readonly skipTLSVerify: boolean;
 }
 
 export function newClusters(a: any): Cluster[] {
@@ -26,7 +28,8 @@ function clusterIterator(): u.ListIterator<any, Cluster> {
             name: elt['name'],
             caData: elt.cluster['certificate-authority-data'],
             caFile: elt.cluster['certificate-authority'],
-            server: elt.cluster['server']
+            server: elt.cluster['server'],
+            skipTLSVerify: elt.cluster['insecure-skip-tls-verify'] == 'true'
         };
     }
 }
@@ -37,6 +40,10 @@ export interface User {
     readonly certFile: string
     readonly keyData: string
     readonly keyFile: string
+    readonly authProvider: Object
+    readonly token: string
+    readonly username: string
+    readonly password: string
 }
 
 export function newUsers(a: any): User[] {
@@ -48,18 +55,23 @@ function userIterator(): u.ListIterator<any, User> {
         if (!elt.name) {
             throw new Error(`users[${i}].name is missing`);
         }
-        if (!elt.user["client-certificate-data"] && !elt.user["client-certificate"]) {
-            throw new Error(`users[${i}].user.client-certificate-data is missing`);
+        let token = null;
+        if (elt.user["token"]) {
+            token = elt.user["token"];
         }
-        if (!elt.user["client-key-data"] && !elt.user["client-key"]) {
-            throw new Error(`users[${i}].user.client-key-data is missing`);
+        if (elt.user["token-file"]) {
+            token = fs.readFileSync(elt.user["token-file"]);
         }
         return {
             name: elt.name,
             certData: elt.user["client-certificate-data"],
             certFile: elt.user["client-certificate"],
             keyData: elt.user["client-key-data"],
-            keyFile: elt.user["client-key"]
+            keyFile: elt.user["client-key"],
+            authProvider: elt.user["auth-provider"],
+            token: token,
+            username: elt.user["username"],
+            password: elt.user["password"]
         }
     }
 }

@@ -110,6 +110,9 @@ export class KubeConfig {
         let cluster = this.getCurrentCluster();
         let user = this.getCurrentUser();
 
+        if (cluster.skipTLSVerify) {
+            opts.strictSSL = false
+        }
         opts.ca = this.bufferFromFileOrString(cluster.caFile, cluster.caData);
         opts.cert = this.bufferFromFileOrString(user.certFile, user.certData);
         opts.key = this.bufferFromFileOrString(user.keyFile, user.keyData);
@@ -146,16 +149,16 @@ export class KubeConfig {
                 }
             }
         }
-        if (user['token']) {
-            token = 'Bearer ' + user['token'];
+        if (user.token) {
+            token = 'Bearer ' + user.token;
         }
         if (token) {
             opts.headers['Authorization'] = token;
         }
-        if (user['username']) {
+        if (user.username) {
             opts.auth = {
-                username: user['username'],
-                password: user['password']
+                username: user.username,
+                password: user.password
             }
         }
     }
