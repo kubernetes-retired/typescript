@@ -1,8 +1,12 @@
-import config = require('./config');
+import k8s = require('@kubernetes/typescript-node');
 
-let k8sApi = config.Config.defaultClient();
+let k8sApi = k8s.Config.defaultClient();
 
 k8sApi.listNamespacedPod('default')
     .then((res) => {
         console.log(res.body);
     });
+
+// Example of instantiating a Pod object.
+let pod = {
+} as k8s.V1Pod;
