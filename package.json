@@ -7,8 +7,8 @@
     "url": "git+https://github.com/kubernetes-client/typescript.git"
   },
   "files": [
-     "*.ts",
-     "*.js"
+    "*.ts",
+    "*.js"
   ],
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   "dependencies": {
     "base-64": "^0.1.0",
     "bluebird": "^3.3.5",
+    "byline": "^5.0.0",
     "chai": "^4.1.0",
     "js-yaml": "^3.5.2",
     "jsonpath": "^0.2.11",
