@@ -1,5 +1,8 @@
+import stream = require('stream');
+
 import ws = require('websocket');
 import { KubeConfig } from '@kubernetes/typescript-node';
+import { V1Status } from '@kubernetes/typescript-node';
 
 const protocols = [
     "v4.channel.k8s.io",
@@ -22,38 +25,81 @@ export class WebSocketHandler {
 
     public connect(path: string,
                    textHandler: (text: string) => void,
-                   binaryHandler: (stream: number, buff: Buffer) => void) {
+                   binaryHandler: (stream: number, buff: Buffer) => void): Promise<ws.connection> {
         let opts = {};
         this.config.applyToRequest(opts);
         let client = new ws.client({ 'tlsOptions': opts });
 
-        client.on('connect', (connection) => {
-            connection.on('message', function(message) {
-                if (message.type === 'utf8') {
-                    if (textHandler) {
-                        textHandler(message.utf8Data);
+        return new Promise((resolve, reject) => {
+            client.on('connect', (connection) => {
+                connection.on('message', function(message) {
+                    if (message.type === 'utf8') {
+                        if (textHandler) {
+                            textHandler(message.utf8Data);
+                        }
                     }
-                }
-                else if (message.type === 'binary') {
-                    if (binaryHandler) {
-                        let stream = message.binaryData.readInt8();
-                        binaryHandler(stream, message.binaryData.slice(1));
+                    else if (message.type === 'binary') {
+                        if (binaryHandler) {
+                            let stream = message.binaryData.readInt8();
+                            binaryHandler(stream, message.binaryData.slice(1));
+                        }
                     }
-                }
+                });
+                resolve(connection);
             });
+            
+            client.on('connectFailed', (err) => {
+                reject(err);
+            });
+
+            var url;
+            var server = this.config.getCurrentCluster().server;
+            if (server.startsWith('https://')) {
+                url = 'wss://' + server.substr(8) + path;
+            } else {
+                url = 'ws://' + server.substr(7) + path;
+            }
+            client.connect(url, protocols);    
         });
-        
-        client.on('connectFailed', (err) => {
-            console.log(err);
-        });
-        
-        client.on('httpResponse', (resp) => {
-            console.log(resp);
+    }
+
+    public static handleStandardStreams(stream: number, buff: Buffer, stdout: any, stderr: any): V1Status {
+        if (buff.length < 1) {
+            return null;
+        }
+        if (stream == WebSocketHandler.StdoutStream) {
+            stdout.write(buff);
+        } else if (stream == WebSocketHandler.StderrStream) {
+            stderr.write(buff);
+        } else if (stream == WebSocketHandler.StatusStream) {
+            // stream closing.
+            if (stdout) {
+                stdout.end();
+            }
+            if (stderr) {
+                stderr.end();
+            }
+            return JSON.parse(buff.toString('utf8')) as V1Status;
+        } else {
+            console.log("Unknown stream: " + stream);
+        }
+        return null;
+    }
+
+    public static handleStandardInput(conn: ws.connection, stdin: stream.Readable | any) {
+        stdin.on('data', (data) => {
+            let buff = new Buffer(data.length + 1);
+            buff.writeInt8(0, 0);
+            if (data instanceof Buffer) {
+                data.copy(buff, 1);
+            } else {
+                buff.write(data, 1);
+            }
+            conn.send(buff);        
         });
 
-        // TODO: handle 'ws://' here.
-        var url = 'wss://' + this.config.getCurrentCluster().server.substr(8) + path;
-
-        client.connect(url, protocols);
+        stdin.on('end', () => {
+            conn.close(ws.connection.CLOSE_REASON_NORMAL);
+        });
     }
 }
