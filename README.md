@@ -1,3 +1,11 @@
+# DEPRECATED!
+
+This library has been deprecated and merged with the
+[javascript](https://github.com/kubernetes-client/javascript) library project.
+
+Please file issues and PRs against that project, this is retained for
+historical reasons only.
+
 # typescript client for Kubernetes
 
 [![Build Status](https://travis-ci.org/kubernetes-client/typescript.svg?branch=master)](https://travis-ci.org/kubernetes-client/typescript)
