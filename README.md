@@ -16,7 +16,7 @@ subject to change at any time.
 This is the Typescript client library for Kubernetes. It's intended to be used
 in Node applications that want to talk to the Kubernetes API.
 
-# Installing
+## Installing
 
 To install and save the result to your project's local `package.json` manifest:
 
@@ -24,7 +24,7 @@ To install and save the result to your project's local `package.json` manifest:
 npm install --save @kubernetes/typescript-node
 ```
 
-# Development
+## Development
 
 All dependencies of this project are expressed in its 
 [`package.json` file](./package.json). Before you start developing, ensure
@@ -34,7 +34,7 @@ that you have [NPM](https://www.npmjs.com/) installed, then run:
 npm install
 ```
 
-# Testing
+## Testing
 
 Tests are written using the [Chai](http://chaijs.com/) library. See
 [`config_test.ts`](./config_test.ts) for an example.
@@ -45,7 +45,7 @@ To run tests, execute the following:
 npm test
 ```
 
-# Example Code
+## Example Code
 
 ```js
 import config = require('./config');
@@ -58,3 +58,6 @@ k8sApi.listNamespacedPod('default')
     });
 ```
 
+## Contributing
+
+Please see [CONTRIBUTING.md](CONTRIBUTING.md) for instructions on how to contribute.
